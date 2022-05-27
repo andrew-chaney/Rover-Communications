@@ -15,7 +15,7 @@ def write_read(x):
 
 def main():
     while True:
-        num = input("Enter something: ")
+        num = input(">> ")
         val = write_read(num)
         print(val)
 
