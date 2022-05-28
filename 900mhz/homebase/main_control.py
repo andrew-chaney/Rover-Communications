@@ -43,29 +43,41 @@ def main():
     setup_logger(verbose=True)
 
     logger.debug("Attempting serial connection.")
-    Serial = serial.Serial(
-        port="/dev/tty.usbserial-AB0KTHBP",
-        baudrate="57600",
-        timeout=.1
-    )
+    try:
+        Serial = serial.Serial(
+            port="/dev/tty.usbserial-AB0KTHBP",
+            baudrate="57600",
+            timeout=.1
+        )
+    except Exception as e:
+        logger.error(e)
+        sys.exit(e)
     logger.debug("Serial connection successful.")
     
     logger.debug("Attempting controller connection.")
-    get_controller()
+    try:
+        get_controller()
+    except Exception as e:
+        logger.error(e)
+        sys.exit(e)
     logger.debug("Controller connection successful.")
 
     
-    packets_sent = 0
+    packets_num = 0
     logger.debug("Listening for input to transmit.")
     while True:
         output = controller.read(64)
         if output:
-            data = write_to_stream(output)
-            packets_sent += 1
-            logger.debug("PACKET {} TRANSMITTED --- Packet Data: [{}]".format(
-                packets_sent,
-                " ".join(["{:02x}".format(x) for x in data])
-            ))
+            packet_num += 1
+            try:
+                data = write_to_stream(output)
+                logger.debug("PACKET {} TRANSMITTED --- Packet Data: [{}]".format(
+                    packet_num,
+                    " ".join(["{:02x}".format(x) for x in data])
+                ))
+            except Exception as e:
+                logger.error("Error with the transmission of Packet {}".format(packet_num))
+                logger.error(e)
 
 
 if __name__ == "__main__":
