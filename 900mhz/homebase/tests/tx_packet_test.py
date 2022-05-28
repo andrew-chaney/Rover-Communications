@@ -32,9 +32,12 @@ def main():
     controller = get_controller()
     print("DONE\n")
     
+    max_packets = int(input("Number of Packets to Send: "))
+    print()
+    
     packets_sent = 0
 
-    while packets_sent < 50:
+    while packets_sent < max_packets:
         output = controller.read(64)
         if output:
             data = write_to_stream(output)
