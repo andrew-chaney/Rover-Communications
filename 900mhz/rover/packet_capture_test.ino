@@ -3,7 +3,7 @@ int packet_count;
 void setup() {
     Serial.begin(9600);    // Computer connection
     Serial1.begin(57600);  // Radio connection
-    Serial.print("Beginning packet capture...\n")
+    Serial.print("Beginning packet capture...\n");
 }
 
 void loop() {
