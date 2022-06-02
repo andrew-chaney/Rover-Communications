@@ -1,11 +1,14 @@
 import hid
 import logging
+import os
 import serial
 import sys
 import time
 
+
 def setup_logger(verbose=False):
     global logger
+    os.chdir("/Users/andrewchaney/Documents/Projects/Rover-Communications/900mhz/homebase")
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
@@ -31,11 +34,12 @@ def get_controller():
 
 
 def write_to_stream(x) -> bytearray:
-    # Header and footer to show where the packet starts/stops
-    header = 100
-    footer = 101
-    x.insert(0, header)
-    x.append(footer)
+    # Header and footer to show where the packet starts/stops, arbitrary
+    if len(x) == 8:
+        header = 0
+        footer = 1
+        x.insert(0, header)
+        x.append(footer)
 
     data = bytearray(x)
     Serial.write(data)
@@ -64,15 +68,22 @@ def main():
         logger.error(e)
         sys.exit(e)
 
-
     packet_num = 0
+    prev_tx = ""
     logger.debug("Listening for input to transmit.")
     while True:
         output = controller.read(64)
+        tx = ""
         if output:
-            packet_num += 1
+            tx = output
+            prev_tx = tx
+        elif prev_tx:
+            tx = prev_tx
+
+        if tx:
             try:
-                data = write_to_stream(output)
+                packet_num += 1
+                data = write_to_stream(tx)
                 logger.debug("PACKET {} TRANSMITTED --- Packet Data: [{}]".format(
                     packet_num,
                     " ".join(["{:02x}".format(x) for x in data])
