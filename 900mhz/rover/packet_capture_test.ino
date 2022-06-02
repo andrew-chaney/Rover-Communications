@@ -7,7 +7,7 @@ void setup() {
 }
 
 void loop() {
-    int bytes_read = 10;
+    int bytes_read = 0;
     byte packet[10] = {};
 
     // Capture the whole transmission.
