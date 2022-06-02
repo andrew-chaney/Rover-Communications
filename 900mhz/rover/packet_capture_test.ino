@@ -31,7 +31,7 @@ void loop() {
         // use without the header and footer.
         byte stripped_packet[8] = {};
         for (int i = 1; i < 9; i++) {
-            stripped_packet[i - 1] = packet[i]
+            stripped_packet[i - 1] = packet[i];
         }
 
         Serial.print("Stripped Packet ");
